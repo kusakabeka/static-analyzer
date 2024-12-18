@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Code Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Static Code Analyzer</h1>
+<form id="uploadForm">
+    <label for="file">Choose a Java file to analyze:</label><br>
+    <input type="file" id="file" name="file" accept=".java"><br>
+    <button type="submit">Upload and Analyze</button>
+</form>
+<div id="result"></div>
+
+<script>
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('file');
+        if (!fileInput.files.length) {
+            alert("Please select a file first.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        try {
+            const response = await fetch("/api/analysis/upload", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        } catch (error) {
+            document.getElementById('result').innerText = "Error: " + error.message;
+        }
+    };
+</script>
+</body>
+</html>
